@@ -13,6 +13,7 @@ const crudcontroller=require("../controllers/firebasecrud")
 router.post('/create',crudcontroller.insert)
 router.post('/select',crudcontroller.select)
 router.post('/Update',crudcontroller.Update)
+router.post('/hbstateselect',crudcontroller.stateselect)
 
 
 

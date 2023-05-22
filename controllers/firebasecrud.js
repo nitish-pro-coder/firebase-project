@@ -1,65 +1,120 @@
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 const serviceAccount = require('../firebasecreds.json');
+
 initializeApp({
     credential: cert(serviceAccount)
   });
   
+
 async function insert(req,res){
   const db = getFirestore();
-  // const response = await db.collection('cities').add(req.body);
   var batch = db.batch();
-  console.log(req.body.Citylist);
-  const citylistarr=req.body.Citylist
-  citylistarr.forEach((doc) => {
-    console.log(doc)
-    var docRef = db.collection("hotels").doc(); //automatically generate unique id
-    batch.set(docRef, doc);
-  });
+  // console.log(req.body.Bookinglist);
+  // const bookinglistarr=req.body.Bookinglist;
+  // let lastInsertedbookingId="";
+  // let newPostRef = postsRef.push();
+  // console.log('Added document with ID: ', res.id);
+ 
+  // bookinglistarr.forEach(async(doc) => {
+  //   console.log(doc)
+  //   var BookingRef = db.collection("Bookingdetails").doc(); //automatically generate unique id
+  //   batch.set(BookingRef, doc);
+  //   lastInsertedbookingId= BookingRef.id;
+  // });
+  // await batch.commit();
+  // let travellerlist=req.body.travelerlist;
+  // let RoomDetailslist=req.body.RoomDetails;
+  // console.log(lastInsertedbookingId);
+  // var TravelerdetailsRef = db.collection("Travelerdetails").doc(); //automatically generate unique id"
+  // travellerlist.boookingid=lastInsertedbookingId;
+  // travellerlist.uniqueid=newPostRef.key;
+  // RoomDetailslist.uniqueid=newPostRef.key;
+  // var RoomDetailsRef = db.collection("RoomDetails").doc(); //automatically generate unique id"
+  // console.log(travellerlist);
+  // console.log(RoomDetailsRef);
 
-  // const doclistmap=next.docs.map((doc)=>({id:doc.id,...doc.data()}))
 
-  batch.commit()
+  var hbstateref = db.collection("HBState").doc(); //automatically generate unique id"
+  hbstateref.set(req.body.HBState);
+  // TravelerdetailsRef.set(travellerlist);
+  // RoomDetailsRef.set(RoomDetailslist);
+   
   res.send({ msg: "Users Added" });
+}
+
+async function stateselect(req,res){
+
+  const db = getFirestore();
+  const stateref=db.collection('HBState');
+  const statelist =await stateref.get();
+  const statemap=statelist.docs.map((doc)=>({id:doc.id,...doc.data()}));
+  res.send(statemap);
+
 }
 
 
 async function select(req,res){       
-          const db = getFirestore();
-   const cityRef = db.collection('cities')
-   const hotelRef =db.collection('hotels')
+   const db = getFirestore();
+   const logintyperef=db.collection('logintype');
+   const userinformationref=db.collection('userinformation')
+   const tripdetails=db.collection('Bookingdetails')
+   const RoomDetails=db.collection('RoomDetails')
 
-const docslist = await cityRef.get();
-const hotellist = await hotelRef.get(); 
+const logintypelist =await logintyperef.get();
+const userinformationlist=await userinformationref.get();
+const tripdetailslist=await tripdetails.get();
+const RoomDetailslist=await RoomDetails.get();
 
 
-// const last = docslist.docs[docslist.docs.length - 1];
 
-// const hotels
-// const next = await cityRef.where("Cityname","==",req.body.Cityname).limit(3).get()
 
-// if (next.empty) {
-//   console.log('No matching documents.');
-//   return;
-// }  
-  // console.log(next.docs)
+const logintypemap=logintypelist.docs.map((doc)=>({id:doc.id,...doc.data()}));
+const userinformationmap=userinformationlist.docs.map((doc)=>({id:doc.id,...doc.data()}));
+const tripdetailsmap=tripdetailslist.docs.map((doc)=>({id:doc.id,...doc.data()}));
+const RoomDetailsmap=RoomDetailslist.docs.map((doc)=>({id:doc.id,...doc.data()}));
 
-  
-  
- const doclistmap=docslist.docs.map((doc)=>({citieslist:{id:doc.id,...doc.data()}}))
-   
- const hotellistmap=hotellist.docs.map((doc)=>({hotellist:{id:doc.id,...doc.data()}}))
- const combiningarray=[...doclistmap,...hotellistmap]
+// const resultarr=[{...logintypemap},{...userinformationmap}];
+
+
+console.log(RoomDetailsmap);
+
+// console.log();
+
+console.log(resultarr);
+
+
+
+
+
  
-// let clist=combiningarray.filter(list=>list.hotellist.includes(list.citieslist))
 
-// console.log(clist);
-res.send(combiningarray);
+
+
+
+const cityname = "Ooty";
+
+console.log(req.body);
+const matchedObjects = [];
+
+if (resultarr[0]) {
+  const objectsInData0 = Object.values(resultarr[0]).filter(obj => obj.logintype === req.body.logintype);
+  matchedObjects.push(...objectsInData0);
+}
+
+if (resultarr[1]) {
+  const objectsInData1 = Object.values(resultarr[1]).filter(obj => obj.logintype === req.body.logintype );
+  matchedObjects.push(...objectsInData1);
+}
+
+console.log(matchedObjects);
+res.send(RoomDetailsmap);
+// res.json({combiningarray}).send();
 }
 
 async function Update(req,res){       
   const db = getFirestore();
-  console.log(req.body.id)
+  console.log(req.body.id);
   const cityRef = db.collection('cities').doc(req.body.id)
   const Cityname=req.body.Cityname
   const updatedvalue = await cityRef.update({Cityname});
@@ -69,3 +124,4 @@ async function Update(req,res){
 module.exports.Update=Update;
 module.exports.select=select;
 module.exports.insert=insert;
+module.exports.stateselect=stateselect;
