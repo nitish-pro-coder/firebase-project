@@ -8,12 +8,14 @@ const jwt = require("jsonwebtoken");
 
 // const propertycontactins = require("../controllers/PropertyContact")
 const crudcontroller=require("../controllers/firebasecrud")
+const sendmail=require("../controllers/MailController")
 
 
 router.post('/create',crudcontroller.insert)
 router.post('/select',crudcontroller.select)
 router.post('/Update',crudcontroller.Update)
 router.post('/hbstateselect',crudcontroller.stateselect)
+router.post('/sendmail',sendmail.sendmail)
 
 
 
