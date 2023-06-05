@@ -2,6 +2,7 @@ const { initializeApp, applicationDefault, cert } = require('firebase-admin/app'
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 const serviceAccount = require('../firebasecreds.json');
 
+
 initializeApp({
     credential: cert(serviceAccount)
   });
@@ -60,11 +61,14 @@ async function select(req,res){
    const userinformationref=db.collection('userinformation')
    const tripdetails=db.collection('Bookingdetails')
    const RoomDetails=db.collection('RoomDetails')
+   
 
 const logintypelist =await logintyperef.get();
 const userinformationlist=await userinformationref.get();
 const tripdetailslist=await tripdetails.get();
 const RoomDetailslist=await RoomDetails.get();
+
+
 
 
 
@@ -115,10 +119,18 @@ res.send(RoomDetailsmap);
 async function Update(req,res){       
   const db = getFirestore();
   console.log(req.body.id);
-  const cityRef = db.collection('cities').doc(req.body.id)
-  const Cityname=req.body.Cityname
-  const updatedvalue = await cityRef.update({Cityname});
-  res.send({msg:"City has been updated"});
+ // ...
+const BookingRef = db.collection('TP_Booking').doc(req.body.id);
+const timestamp = Timestamp.now();
+
+// Atomically increment the population of the city by 50.
+
+const updated_at_timestamp = FieldValue.serverTimestamp()
+const response = await BookingRef.update({
+  CreatedDate: updated_at_timestamp,
+  MOdifiedDate: updated_at_timestamp,
+})
+  res.send({msg:"Booking has been updated"});
 }
 
 module.exports.Update=Update;

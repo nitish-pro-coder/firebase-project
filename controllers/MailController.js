@@ -1,8 +1,12 @@
 const nodemailer = require('nodemailer');
+const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+const serviceAccount = require('../firebasecreds.json');
 
 // Create a transporter object
 async function sendmail(req, res) {
   try {
+    const db = getFirestore();
     const transporter = await nodemailer.createTransport({
       host: 'smtp.elasticemail.com',
       port: 465,
@@ -12,7 +16,7 @@ async function sendmail(req, res) {
       }
     });
 
-    console.log(transporter)
+    console.log(transporter);
 
     function generateRandomSixDigitNumber() {
         const min = 100000; // Minimum 6-digit number (inclusive)
@@ -33,14 +37,49 @@ async function sendmail(req, res) {
     };
     
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent: ' + info.response);
-    
-    res.status(200).send('Email sent successfully');
-  } catch (error) {
-    console.log(error);
+   
+  
+
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+    console.error('Error occurred while sending email:', error);
     res.status(500).send('Error occurred while sending email');
+  } else {
+    console.log('Email sent successfully:', info.response);
+    // res.status(200).send('Email sent successfully');
+     // ...
+ const loginRef = db.collection('userinformation').where('User_id', '==', 1);
+   
+ let userInformation=[];
+ let userotp
+ loginRef.get()
+   .then((querySnapshot) => {
+    userInformation= querySnapshot.docs.map((doc) => ({id:doc.id,...doc.data()}));
+     console.log(userInformation[0].id);
+    const loginRefup = db.collection('userinformation').doc(userInformation[0].id)
+    const updated_at_timestamp = FieldValue.serverTimestamp()
+     loginRefup.update({
+      CreatedDate: updated_at_timestamp,
+      MOdifiedDate: updated_at_timestamp,
+      login_otp: randomSixDigitNumber
+    })
+    if(req.body.otp===userInformation[0].login_otp){
+      res.status(200).send('Valid OTP');
+    }
+    else{
+      res.status(500).send('Invalid OTP');
+    }
+  })
+   
+   .catch((error) => {
+     console.error('Error getting user information:', error);
+   });
   }
+});
+} catch (error) {
+console.error('Error occurred:', error);
+res.status(500).send('Error occurred while sending email');
+}
 }
 
 module.exports.sendmail = sendmail;
