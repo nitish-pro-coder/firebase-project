@@ -51,7 +51,7 @@ transporter.sendMail(mailOptions, (error, info) => {
  const loginRef = db.collection('userinformation').where('User_id', '==', 1);
    
  let userInformation=[];
- let userotp
+ 
  loginRef.get()
    .then((querySnapshot) => {
     userInformation= querySnapshot.docs.map((doc) => ({id:doc.id,...doc.data()}));
@@ -63,12 +63,7 @@ transporter.sendMail(mailOptions, (error, info) => {
       MOdifiedDate: updated_at_timestamp,
       login_otp: randomSixDigitNumber
     })
-    if(req.body.otp===userInformation[0].login_otp){
-      res.status(200).send('Valid OTP');
-    }
-    else{
-      res.status(500).send('Invalid OTP');
-    }
+   
   })
    
    .catch((error) => {
@@ -82,4 +77,30 @@ res.status(500).send('Error occurred while sending email');
 }
 }
 
+async function Otpverification(req, res) {
+
+  const db = getFirestore();
+  const loginref = db.collection('userinformation').where('User_id', '==',req.body.Userid);
+  let userInformation=[];
+  console.log(req.body);
+  loginref.get()
+   .then((querySnapshot) => {
+    userInformation= querySnapshot.docs.map((doc) => ({id:doc.id,...doc.data()}));
+    console.log(userInformation[0].login_otp); 
+  if(req.body.otp == userInformation[0].login_otp){
+    
+    res.status(200).send('Valid OTP');
+  }
+  else{
+    res.status(500).send('Invalid OTP');
+  }
+   }).catch((error) => {
+    console.log(error);
+   })
+ 
+}
+
 module.exports.sendmail = sendmail;
+module.exports.Otpverification = Otpverification;
+
+

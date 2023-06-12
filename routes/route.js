@@ -16,6 +16,7 @@ router.post('/select',crudcontroller.select)
 router.post('/Update',crudcontroller.Update)
 router.post('/hbstateselect',crudcontroller.stateselect)
 router.post('/sendmail',sendmail.sendmail)
+router.post('/otpverification',sendmail.Otpverification)
 
 
 
