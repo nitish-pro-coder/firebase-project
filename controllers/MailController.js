@@ -73,6 +73,7 @@ transporter.sendMail(mailOptions, (error, info) => {
 });
 } catch (error) {
 console.error('Error occurred:', error);
+res.status(200).send('Email sent successfully');
 res.status(500).send('Error occurred while sending email');
 }
 }
