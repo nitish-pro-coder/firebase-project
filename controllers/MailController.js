@@ -31,9 +31,9 @@ async function sendmail(req, res) {
     const mailOptions = {
       from: 'nitish@warblerit.com',
       to: req.body.mailid,
-      subject: `${randomSixDigitNumber} is your OTP for TravelPlus App`,
+      subject: `${randomSixDigitNumber} is your OTP for self booking App`,
     //   text: 'This is a test email sent from Node.js using Nodemailer.'
-    html: `<p>Hi there!</p><p>${randomSixDigitNumber} is your OTP to verify your email ID and login to TravelPlus App.</p><br/><p>Thanks,</p><p>Team TravelPlus</p>`
+    html: `<p>Hi there!</p><p>${randomSixDigitNumber} is your OTP to verify your email ID and login to self booking.</p><br/><p>Thanks,</p><p>Team TravelPlus</p>`
     };
     
 

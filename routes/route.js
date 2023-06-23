@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 // const propertycontactins = require("../controllers/PropertyContact")
 const crudcontroller=require("../controllers/firebasecrud")
 const sendmail=require("../controllers/MailController")
-
+// const employeedetails=require("../controllers/Employeedetails")
 
 router.post('/create',crudcontroller.insert)
 router.post('/select',crudcontroller.select)
@@ -17,6 +17,11 @@ router.post('/Update',crudcontroller.Update)
 router.post('/hbstateselect',crudcontroller.stateselect)
 router.post('/sendmail',sendmail.sendmail)
 router.post('/otpverification',sendmail.Otpverification)
+router.post('/ClientInsert',crudcontroller.ClientInsert)
+router.post('/CityInsert',crudcontroller.CityInsert)
+router.post('/Bulkdelete',crudcontroller.Bulkdelete)
+router.post('/employeedetails',crudcontroller.employeedetailsgather)
+router.post('/join',crudcontroller.join)
 
 
 
