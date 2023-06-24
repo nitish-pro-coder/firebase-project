@@ -162,7 +162,7 @@ async function CityInsert(req,res){
   const db = getFirestore();
   try {
     let documents = req.body; // Assuming the request body contains an array of documents
-    const collectionRef = db.collection('State');
+    const collectionRef = db.collection('City');
  const collectionSize = await collectionRef.get().then((snapshot) => snapshot.size);
   
   console.log(collectionSize)
@@ -182,7 +182,7 @@ async function CityInsert(req,res){
 
     // Iterate over each document and add it to the batch
     documents.forEach((document) => {
-      const docRef = db.collection('State').doc(); // Generate a new document reference
+      const docRef = db.collection('City').doc(); // Generate a new document reference
       batch.set(docRef, document);
     });
 
@@ -203,7 +203,7 @@ async function Bulkdelete(req,res){
   const db = getFirestore();
   
   try {
-    const snapshot = await db.collection(collectionName).get();
+    const snapshot = await db.collection('City').get();
     const batch = db.batch();
 
     snapshot.forEach((doc) => {
@@ -225,15 +225,16 @@ async function employeedetailsgather(req,res){
  
 const employeedetailslist =await empref.get();
 const employeemap=employeedetailslist.docs.map((doc)=>({id:doc.id,...doc.data()})); 
+console.log(employeemap)
 if(employeemap[0].Official_EmailId===req.body.email){
   res.status(200).send({message:"Email matched successfully",data:employeemap})
 }
 else{
-  res.status(500).send("It is not official domain "+error)
+  res.status(500).send("It is not official domain ")
 }
 }
 catch(error){
-  res.status(500).send("Error in fetching the employee details "+error)
+  res.status(500).send("Error in fetching the employee details ")
 }
 // res.json({combiningarray}).send();
 }
